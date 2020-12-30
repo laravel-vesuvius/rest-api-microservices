@@ -98,4 +98,10 @@ class User implements UserInterface
     }
 
     public function eraseCredentials(): void {}
+
+    public function updateData(string $email, string $firstName, string $lastName): void
+    {
+        $this->email = $email;
+        $this->personalData = new PersonalData($firstName, $lastName);
+    }
 }

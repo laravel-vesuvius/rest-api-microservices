@@ -2,9 +2,12 @@
 
 namespace App\Infrastructure\User\Repository\Doctrine;
 
+use App\Domain\Common\Repository\PaginatedQueryResult;
 use App\Domain\User\Entity\User;
+use App\Domain\User\Query\GetUsersQuery;
 use App\Domain\User\Repository\UserRepositoryInterface;
 use App\Domain\User\View\UserDetailedView;
+use App\Domain\User\View\UserSimpleView;
 use App\Infrastructure\Common\Repository\AbstractDoctrineRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
@@ -50,5 +53,21 @@ class UserRepository extends AbstractDoctrineRepository implements UserRepositor
             ->getQuery()
             ->getOneOrNullResult()
         ;
+    }
+
+    /**
+     * @param GetUsersQuery $query
+     * @return PaginatedQueryResult
+     */
+    public function findUsers(GetUsersQuery $query): PaginatedQueryResult
+    {
+        $qb = $this->_em->createQueryBuilder()
+            ->select(
+                sprintf('NEW %s (u.id, u.email, u.personalData.firstName, u.personalData.lastName)', UserSimpleView::class)
+            )
+            ->from(User::class, 'u')
+        ;
+
+        return $this->paginate($qb, $query);
     }
 }
