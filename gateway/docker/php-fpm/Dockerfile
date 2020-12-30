@@ -8,7 +8,7 @@ RUN docker-php-ext-install pdo_mysql
 RUN apk add --no-cache libpng libpng-dev && docker-php-ext-install gd && apk del libpng-dev
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-CMD composer install ; php-fpm
+CMD composer install ; wait-for-it gateway_database:3306 -- bin/console doctrine:migrations:migrate ; bin/console assets:install; php-fpm
 
 COPY --chown=www-data:www-data . /var/www
 
