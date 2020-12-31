@@ -22,9 +22,12 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
+use App\Domain\User\Service\PermissionManager;
+use App\Domain\User\Enum\RoleEnum;
 
 /**
  * @Rest\Route(path="/secure/user")
@@ -99,6 +102,8 @@ class UserController extends AbstractFOSRestController
     /**
      * @Rest\Post(path="")
      *
+     * @IsGranted(attributes=RoleEnum::ROLE_ADMIN)
+     *
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
@@ -137,6 +142,8 @@ class UserController extends AbstractFOSRestController
 
     /**
      * @Rest\Put(path="/{id}")
+     *
+     * @IsGranted(attributes=PermissionManager::UPDATE_USER, subject="user")
      *
      * @OA\RequestBody(
      *     required=true,
@@ -184,6 +191,8 @@ class UserController extends AbstractFOSRestController
     /**
      * @Rest\Delete(path="/{id}")
      *
+     * @IsGranted(attributes=PermissionManager::DELETE_USER, subject="user")
+     *
      * @OA\Response(
      *     response=204,
      *     description="",
@@ -191,10 +200,10 @@ class UserController extends AbstractFOSRestController
      *
      * @Rest\View
      *
-     * @param string $id
+     * @param User $user
      */
-    public function delete(string $id): void
+    public function delete(User $user): void
     {
-        $this->commandBus->dispatch(new DeleteUserCommand($id));
+        $this->commandBus->dispatch(new DeleteUserCommand($user->getId()));
     }
 }

@@ -27,4 +27,6 @@ interface UserRepositoryInterface extends BaseEntityRepositoryInterface
     public function findDetailedView(string $id): ?UserDetailedView;
 
     public function findUsers(GetUsersQuery $query): PaginatedQueryResult;
+
+    public function loadUserByUsername($username): ?User;
 }

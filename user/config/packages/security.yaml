@@ -8,12 +8,13 @@ security:
     role_hierarchy:
         ROLE_ADMIN: [ ROLE_USER ]
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            anonymous: lazy
-            provider: users
+        api:
+            pattern:   ^/api/(?!(doc|auth))
+            stateless: true
+            guard:
+                provider: users
+                authenticators:
+                    - App\Application\Security\Authenticator\TokenAuthenticator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

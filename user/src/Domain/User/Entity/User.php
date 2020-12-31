@@ -104,4 +104,9 @@ class User implements UserInterface
         $this->email = $email;
         $this->personalData = new PersonalData($firstName, $lastName);
     }
+
+    public function isAdmin(): bool
+    {
+        return in_array(RoleEnum::ROLE_ADMIN, $this->roles, true);
+    }
 }

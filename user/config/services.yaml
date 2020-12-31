@@ -41,3 +41,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Listeners
+    App\Application\EventListener\Kernel\KernelExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    # Services
+    App\Application\Client\Auth\AuthServiceClient:
+        arguments:
+            $authServiceHost: '%env(AUTH_SERVICE_HOST)%'

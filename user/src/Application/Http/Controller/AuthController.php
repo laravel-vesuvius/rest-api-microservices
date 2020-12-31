@@ -10,8 +10,10 @@ use App\Application\Http\Request\User\SignUpRequest;
 use App\Application\Service\ValidationService;
 use App\Application\Utils\MessengerUtils;
 use App\Domain\User\Query\FindUserQuery;
+use App\Domain\User\UseCase\CheckUserCredentialsCommand;
 use App\Domain\User\View\UserDetailedView;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -19,11 +21,11 @@ use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
- * @Rest\Route(path="/sign-up")
+ * @Rest\Route(path="/auth")
  *
- * @OA\Tag(name="Sign-Up")
+ * @OA\Tag(name="Auth")
  */
-class SignUpController extends AbstractFOSRestController
+class AuthController extends AbstractFOSRestController
 {
     /**
      * @var MessageBusInterface
@@ -42,7 +44,7 @@ class SignUpController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Post(path="")
+     * @Rest\Post(path="/sign-up")
      *
      * @OA\RequestBody(
      *     required=true,
@@ -77,6 +79,23 @@ class SignUpController extends AbstractFOSRestController
 
         return MessengerUtils::getResultFromEnvelope(
             $this->queryBus->dispatch(new FindUserQuery($command->getId()))
+        );
+    }
+
+    /**
+     * @Rest\Post(path="/check-credentials")
+     *
+     * @Rest\RequestParam(name="username", allowBlank=false, nullable=false, strict=true)
+     * @Rest\RequestParam(name="password", allowBlank=false, nullable=false, strict=true)
+     *
+     * @Rest\View
+     *
+     * @param ParamFetcherInterface $paramFetcher
+     */
+    public function checkCredentials(ParamFetcherInterface $paramFetcher): void
+    {
+        $this->commandBus->dispatch(
+            new CheckUserCredentialsCommand($paramFetcher->get('username'), $paramFetcher->get('password'))
         );
     }
 }
