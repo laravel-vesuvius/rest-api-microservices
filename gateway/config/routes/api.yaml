@@ -1,0 +1,4 @@
+api:
+    resource: ../../src/Http/Controller/
+    type: annotation
+    prefix: /api

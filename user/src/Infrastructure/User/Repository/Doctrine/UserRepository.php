@@ -45,7 +45,7 @@ class UserRepository extends AbstractDoctrineRepository implements UserRepositor
     {
         return $this->_em->createQueryBuilder()
             ->select(
-                sprintf('NEW %s (u.id, u.email, u.personalData.firstName, u.personalData.lastName)', UserDetailedView::class)
+                sprintf('NEW %s (u.id, u.email, u.personalData.firstName, u.personalData.lastName, u.roles)', UserDetailedView::class)
             )
             ->from(User::class, 'u')
             ->where('u.id = :id')

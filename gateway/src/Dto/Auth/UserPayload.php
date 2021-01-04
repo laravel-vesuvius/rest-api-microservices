@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Service;
+namespace App\Dto\Auth;
 
 class UserPayload
 {
@@ -41,5 +41,15 @@ class UserPayload
     public function getRoles(): array
     {
         return $this->roles;
+    }
+
+    public function toArray(): array
+    {
+        $result = [];
+        foreach ($this as $property => $value) {
+            $result[$property] = $value;
+        }
+
+        return $result;
     }
 }

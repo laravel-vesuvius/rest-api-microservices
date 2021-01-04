@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Client\Auth;
 
-use App\Application\Service\UserPayload;
+use App\Domain\User\ValueObject\UserPayload;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

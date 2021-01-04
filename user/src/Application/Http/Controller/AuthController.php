@@ -10,7 +10,9 @@ use App\Application\Http\Request\User\SignUpRequest;
 use App\Application\Service\ValidationService;
 use App\Application\Utils\MessengerUtils;
 use App\Domain\User\Query\FindUserQuery;
+use App\Domain\User\Query\GetUserPayloadByUsernameQuery;
 use App\Domain\User\UseCase\CheckUserCredentialsCommand;
+use App\Domain\User\ValueObject\UserPayload;
 use App\Domain\User\View\UserDetailedView;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -88,14 +90,25 @@ class AuthController extends AbstractFOSRestController
      * @Rest\RequestParam(name="username", allowBlank=false, nullable=false, strict=true)
      * @Rest\RequestParam(name="password", allowBlank=false, nullable=false, strict=true)
      *
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @Model(type=UserPayload::class)
+     * )
+     *
      * @Rest\View
      *
      * @param ParamFetcherInterface $paramFetcher
+     * @return UserPayload
      */
-    public function checkCredentials(ParamFetcherInterface $paramFetcher): void
+    public function checkCredentials(ParamFetcherInterface $paramFetcher): UserPayload
     {
         $this->commandBus->dispatch(
             new CheckUserCredentialsCommand($paramFetcher->get('username'), $paramFetcher->get('password'))
+        );
+
+        return MessengerUtils::getResultFromEnvelope(
+            $this->queryBus->dispatch(new GetUserPayloadByUsernameQuery($paramFetcher->get('username')))
         );
     }
 }
