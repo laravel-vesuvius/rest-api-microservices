@@ -1,0 +1,8 @@
+imports:
+    - { resource: ../../services.yaml }
+
+services:
+    _defaults:
+        public: true
+
+    test.App\Application\Security\Authenticator\TokenAuthenticator: '@App\Application\Security\Authenticator\TokenAuthenticator'
