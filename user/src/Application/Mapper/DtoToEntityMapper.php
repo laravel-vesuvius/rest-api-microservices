@@ -23,22 +23,19 @@ class DtoToEntityMapper
     {
         $this->entityReflection = new ReflectionClass($entity);
 
-        if (is_object($entity)) {
-            $this->entity = $entity;
-        } else {
-            $this->entity = $this->entityReflection->newInstanceWithoutConstructor();
-        }
-
+        $this->entity = is_object($entity) ? $entity : $this->entityReflection->newInstanceWithoutConstructor();
         if (ArrayUtils::isAssocArray($fields)) {
             foreach ($fields as $dtoField => $entityField) {
                 $dtoField = is_int($dtoField) ? $entityField : $dtoField;
 
                 $this->fillField($dtoField, $entityField);
             }
-        } else {
-            foreach ($fields as $field) {
-                $this->fillField($field, $field);
-            }
+
+            return $this->entity;
+        }
+
+        foreach ($fields as $field) {
+            $this->fillField($field, $field);
         }
 
         return $this->entity;

@@ -17,7 +17,14 @@ abstract class AbstractKernelTestCase extends KernelTestCase
     /**
      * @var Generator
      */
-    protected $faker;
+    protected static $faker;
+
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        self::$faker = Factory::create();
+    }
 
     protected function setUp()
     {
@@ -27,14 +34,14 @@ abstract class AbstractKernelTestCase extends KernelTestCase
 
         $this->beginTransaction();
 
-        $this->faker = Factory::create();
+        self::$faker = Factory::create();
     }
 
     protected function tearDown(): void
     {
         $this->rollbackTransaction();
 
-        $this->faker = null;
+        self::$faker = null;
 
         parent::tearDown();
     }

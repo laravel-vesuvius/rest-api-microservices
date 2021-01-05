@@ -6,7 +6,7 @@ namespace App\Facade;
 
 use App\Client\AuthServiceClient;
 use App\Client\UserServiceClient;
-use App\Dto\Auth\UserPayload;
+use App\Dto\Auth\UserPayloadDto;
 use App\Dto\User\UserDetailedDto;
 use App\Dto\User\UserListDto;
 use App\Http\Query\UserListQueryParams;
@@ -51,7 +51,7 @@ class UserFacade
         $user = $this->userServiceClient->update($id, $request);
 
         $token = $this->authFacade->generateToken(
-            new UserPayload($user->getId(), $user->getEmail(), $user->getRoles())
+            new UserPayloadDto($user->getId(), $user->getEmail(), $user->getRoles())
         );
         $user->setToken($token);
 
@@ -68,7 +68,7 @@ class UserFacade
         $user = $this->userServiceClient->signUp($request);
 
         $token = $this->authFacade->generateToken(
-            new UserPayload($user->getId(), $user->getEmail(), $user->getRoles())
+            new UserPayloadDto($user->getId(), $user->getEmail(), $user->getRoles())
         );
         $user->setToken($token);
 

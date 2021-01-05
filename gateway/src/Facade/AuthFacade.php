@@ -6,7 +6,7 @@ namespace App\Facade;
 
 use App\Client\AuthServiceClient;
 use App\Client\UserServiceClient;
-use App\Dto\Auth\UserPayload;
+use App\Dto\Auth\UserPayloadDto;
 use App\Service\TokenManager;
 
 class AuthFacade
@@ -40,7 +40,7 @@ class AuthFacade
         );
     }
 
-    public function generateToken(UserPayload $userPayload): string
+    public function generateToken(UserPayloadDto $userPayload): string
     {
         $token = $this->tokenManager->create(
             $this->authServiceClient->generateToken($userPayload)

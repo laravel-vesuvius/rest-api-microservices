@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Client;
 
-use App\Dto\Auth\UserPayload;
+use App\Dto\Auth\UserPayloadDto;
 use App\Storage\TokenStorage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -25,7 +25,7 @@ class AuthServiceClient extends AbstractBaseClient
         $this->host = ltrim($host, '/');
     }
 
-    public function generateToken(UserPayload $userPayload): string
+    public function generateToken(UserPayloadDto $userPayload): string
     {
         $response = $this->httpClient->request(
             Request::METHOD_POST,

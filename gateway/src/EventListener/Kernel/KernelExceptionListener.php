@@ -61,7 +61,11 @@ class KernelExceptionListener
             }
 
             $event->setResponse(new JsonResponse(['errors' => $message], $exception->getStatusCode()));
-        } elseif ($exception instanceof RuntimeException) {
+
+            return;
+        }
+
+        if ($exception instanceof RuntimeException) {
             $event->setResponse(new JsonResponse(
                 ['errors' => ['_system' => str_replace(' ', '_', mb_strtoupper($exception->getMessage()))]],
                 $exception->getCode() ?: 500
@@ -75,14 +79,11 @@ class KernelExceptionListener
 
         /** @var ConstraintViolation $violation */
         foreach ($violations as $violation) {
-            if ($constraint = $violation->getConstraint()) {
-                try {
-                    $message = $constraint::getErrorName($violation->getCode());
-                } catch (Exception $e) {
-                    continue;
-                }
-            } else {
-                $message = $violation->getMessage();
+            try {
+                $constraint = $violation->getConstraint();
+                $message = $constraint ? $constraint::getErrorName($violation->getCode()) : $violation->getMessage();
+            } catch (Exception $e) {
+                continue;
             }
 
             $propertyPath = $violation->getPropertyPath();

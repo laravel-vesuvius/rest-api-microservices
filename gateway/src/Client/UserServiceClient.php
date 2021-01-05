@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Client;
 
-use App\Dto\Auth\UserPayload;
+use App\Dto\Auth\UserPayloadDto;
 use App\Dto\User\UserDetailedDto;
 use App\Dto\User\UserListDto;
 use App\Dto\User\UserSimpleDto;
@@ -137,7 +137,7 @@ class UserServiceClient extends AbstractBaseClient
         return UserDetailedDto::createFromUserServiceResponse($responseData);
     }
 
-    public function checkCredentials(string $username, string $password): UserPayload
+    public function checkCredentials(string $username, string $password): UserPayloadDto
     {
         $response = $this->httpClient->request(
             Request::METHOD_POST,
@@ -149,6 +149,6 @@ class UserServiceClient extends AbstractBaseClient
 
         $responseData = $this->processResponse($response);
 
-        return new UserPayload($responseData['id'], $responseData['username'], $responseData['roles']);
+        return new UserPayloadDto($responseData['id'], $responseData['username'], $responseData['roles']);
     }
 }
